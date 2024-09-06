@@ -2,11 +2,34 @@
 
 import { Button } from "@/components/ui/button";
 import { Github, Mail } from "lucide-react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 export default function SignInButtons() {
+  const { data: session } = useSession();
+  console.log(session);
+
   const handleSignIn = (provider: string) => {
-    console.log(provider);
+    signIn(provider);
   };
+
+  if (session) {
+    return (
+      <>
+        <div className="flex items-center space-x-4">
+          <p>Signed in as {session?.user?.name}</p>
+          <Image
+            src={session?.user?.image as string}
+            alt="Profile picture"
+            width={50}
+            height={50}
+            className="rounded-full"
+          />
+        </div>
+        <Button onClick={() => signOut()}>Sign out</Button>
+      </>
+    );
+  }
 
   return (
     <div className="flex flex-col space-y-4">
